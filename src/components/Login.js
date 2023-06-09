@@ -4,12 +4,13 @@ import { Alert, Form } from "react-bootstrap";
 import { Button } from "react-bootstrap";
 import GoogleButton from "react-google-button";
 import { useUserAuth } from "../context/UserAuthContext";
+import GithubButton from 'react-github-login-button'
 
 const Login = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [error, setError] = useState('')
-    const { logIn, googleSignIn } = useUserAuth()
+    const { logIn, googleSignIn, githubSignIn, sendPasswordReset } = useUserAuth()
     const navigate = useNavigate()
 
     const handleSubmit = async (e) => {
@@ -32,6 +33,23 @@ const Login = () => {
             setError(err.message)
         }
     }
+    const handleGithubSignIn = async (e) => {
+        e.preventDefault()
+        try{
+            await githubSignIn()
+            navigate('/home')
+        } catch (err) {
+            setError(err.message)
+        }
+    }
+
+    // try {
+    //     await sendPasswordResetEmail(auth, email);
+    //     alert("Password reset link sent!");
+    //   } catch (err) {
+    //     console.error(err);
+    //     alert(err.message);
+    //   }
 
   return (
     <>
@@ -69,10 +87,21 @@ const Login = () => {
                     onClick={handleGoogleSignIn}
                 />
             </div>
+            <br />
+            <div>
+                <GithubButton
+                    className="w-100"
+                    onClick={handleGithubSignIn}
+                />
+            </div>
         </div>
       <div className="p-4 box mt-3 text-center">
         Don't have an account? 
         <Link to="/signup">Sign Up</Link>
+      </div>
+      <div className="p-4 box mt-3 text-center">
+        Forgot Password?
+        <Link to="/forgotpassword">Reset Password</Link>
       </div>
     </>
   );
